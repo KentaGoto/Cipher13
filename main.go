@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ROT13変換用の関数
+// ROT13 conversion
 func rot13(s string) string {
 	rot13 := func(r rune) rune {
 		switch {
@@ -22,28 +22,26 @@ func rot13(s string) string {
 }
 
 func main() {
-	// ルーターの作成
 	router := gin.Default()
 
-	// APIのルーティング
+	// API Routing
 	router.GET("/api/rot13", func(c *gin.Context) {
-		// クエリパラメータから元の文字列を取得
+		// Get the original string from the query parameter.
 		original := c.Query("s")
-		// 元の文字列をROT13変換
+		// ROT13 conversion of the original string.
 		encrypted := rot13(original)
-		// 結果をJSONとして返す
+		// Return results as JSON.
 		c.JSON(200, gin.H{
 			"original": original,
 			"rot13":    encrypted,
 		})
 	})
 
-	// 静的ファイルのサーブ
+	// Serving Static Files.
 	router.Static("/static", "./my-app/build/static")
 	router.GET("/", func(c *gin.Context) {
 		c.File("./my-app/build/index.html")
 	})
 
-	// サーバーの起動
 	router.Run(":8080")
 }
