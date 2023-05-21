@@ -4,7 +4,7 @@ This application simply returns Rot13.
 
 ![](img/Animation.gif)
 
-## Usages
+## Usage
 ```bash
 $ go run main.go
 ```
@@ -17,6 +17,10 @@ $ curl http://localhost:8080/api/rot13?s=test-strings
                                  Dload  Upload   Total   Spent    Left  Speed
 100    50  100    50    0     0   1219      0 --:--:-- --:--:-- --:--:--  1515{"original":"test-strings","rot13":"grfg-fgevatf"}
 ```
+
+## Requiers
+- Go
+- React
 
 ## License
 MIT
