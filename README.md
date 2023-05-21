@@ -4,7 +4,12 @@ This application simply returns Rot13.
 
 ![](img/Animation.gif)
 
-## API Endpoints
+## Usages
+```bash
+$ go run main.go
+```
+
+### API Endpoints
 
 ```bash
 $ curl http://localhost:8080/api/rot13?s=test-strings
