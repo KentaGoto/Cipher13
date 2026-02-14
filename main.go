@@ -1,14 +1,22 @@
 package main
 
 import (
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
+const serverAddr = ":8080"
+
+type rot13Response struct {
+	Original string `json:"original"`
+	Rot13    string `json:"rot13"`
+}
+
 // ROT13 conversion
 func rot13(s string) string {
-	rot13 := func(r rune) rune {
+	rotate := func(r rune) rune {
 		switch {
 		case 'a' <= r && r <= 'z':
 			return 'a' + (r-'a'+13)%26
@@ -18,30 +26,35 @@ func rot13(s string) string {
 			return r
 		}
 	}
-	return strings.Map(rot13, s)
+
+	return strings.Map(rotate, s)
 }
 
-func main() {
-	router := gin.Default()
+func handleRot13(c *gin.Context) {
+	original := c.Query("s")
+	response := rot13Response{
+		Original: original,
+		Rot13:    rot13(original),
+	}
 
-	// API Routing
-	router.GET("/api/rot13", func(c *gin.Context) {
-		// Get the original string from the query parameter.
-		original := c.Query("s")
-		// ROT13 conversion of the original string.
-		encrypted := rot13(original)
-		// Return results as JSON.
-		c.JSON(200, gin.H{
-			"original": original,
-			"rot13":    encrypted,
-		})
-	})
+	c.JSON(http.StatusOK, response)
+}
 
-	// Serving Static Files.
+func registerRoutes(router *gin.Engine) {
+	router.GET("/api/rot13", handleRot13)
 	router.Static("/static", "./my-app/build/static")
 	router.GET("/", func(c *gin.Context) {
 		c.File("./my-app/build/index.html")
 	})
+}
 
-	router.Run(":8080")
+func newRouter() *gin.Engine {
+	router := gin.Default()
+	registerRoutes(router)
+	return router
+}
+
+func main() {
+	router := newRouter()
+	router.Run(serverAddr)
 }
